@@ -1,19 +1,26 @@
-WIDTH = 1600
-HEIGHT = 1000
+r = 200
+g = 200
+b = 200
+WIDTH = 600
+HEIGHT = 600
 FOODAMOUNT = 6
 MAXOBJECTS = 200
 HEALTH = 1600
 MUTATION_CHANCE = 25
 AUTOFOOD = True
 FOODINTERVAL = 50
-
-
+BUTTONSIZE = 90
+buttonOver= False
 objects = []
 counter = 0
+
 def setup():
     global objects
+    global buttonX, buttonY
+    buttonX = 20
+    buttonY = 20
     size(WIDTH, HEIGHT)
-    fill(0)
+    #fill(0)
     noStroke()
     creature_component = Creature()
     objects.append(Object(creature = creature_component))
@@ -21,7 +28,16 @@ def setup():
     place_food()
     
 def draw():
+
     background(255)
+    fill(255)
+    stroke(0)
+    strokeWeight(2)
+    rect(20,20,80,40)
+    fill(0)
+    textSize(15);
+    text("FOOD",40,45)
+    noStroke()
     global objects, counter
     active_objects = objects
     for obj in active_objects:
@@ -41,10 +57,13 @@ def draw():
         if counter >= FOODINTERVAL and len(objects) < MAXOBJECTS:
             place_food()
             counter = 0
-        
+            
 def mouseClicked():
-    place_food()
-        
+    if 20< mouseX< 100 and 20<mouseY< 60:
+        place_food()
+        print("place food")
+
+   
 def place_food(amount = FOODAMOUNT):
     if len(objects) >= MAXOBJECTS:
         return
@@ -62,7 +81,7 @@ def place_food(amount = FOODAMOUNT):
         i += 1
     
 class Object:
-    def __init__(self, x = WIDTH/2, y = HEIGHT/2, name = 'none', creature = None, color = color(0,0,0), size = 10):
+    def __init__(self, x = WIDTH/2, y = HEIGHT/2, name = 'none', creature = None, color = color(r,g,b), size = 10):
         self.x = x
         self.y = y
         self.name = name
@@ -71,7 +90,6 @@ class Object:
         self.size = size
         if self.creature:
             self.creature.owner = self
-
 class Creature:
     def __init__(self,health = HEALTH, speed = 10, senses = 100, target = None, size = 10):
         self.attributes = []
@@ -92,7 +110,6 @@ class Creature:
                result = True
                break
         return result
-
    
     def calc_energy(self):
         self.energy_loss = int((self.speed * self.speed * self.owner.size * self.owner.size * self.senses)/250000)
@@ -158,14 +175,14 @@ class Creature:
                 change = -1
             if choice == 0:
                 self.speed += change
-                self.owner.color = color(200,0,0)
+                self.owner.color = color(r+50,g,b)
                 if self.speed <= 0:
                     self.speed = 1
             elif choice == 1:
                 self.senses += change*20
                 if self.senses <= 0:
                     self.senses = 20
-                self.owner.color = color(0,0,200)
+                self.owner.color = color(r,g,b+50)
             elif choice == 2:
                 self.owner.size +=change
                 self.health += change*HEALTH/10
@@ -174,7 +191,7 @@ class Creature:
                     self.owner.size = 1
                     self.base_health = HEALTH/10
                     self.health = HEALTH/10
-                self.owner.color = color(0,200,0)
+                self.owner.color = color(r, g +50,b)
             elif choice == 4:
                 selection = int(random(0,2))
                 if selection <= 1:
@@ -256,9 +273,5 @@ class Creature:
             dy = int(round(disty/distance))
             self.move(dx,dy)
                 
-        
-    
-    
-        
         
     
